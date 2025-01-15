@@ -4,12 +4,26 @@
 / <img src="./icons/ollama.png" alt="OpenAI" width="20" style="border-radius: 10px;"> ```Ollama``` 可自行擴展。
 
 ## 使用方式
-1. 下載程式碼並解壓縮。
+### 1. 下載程式碼並解壓縮。
 ``` bash
 git clone https://github.com/Xiaomanto/LLM_Factory.git
 cd LLM_Factory
 ```
-2. 執行程式碼。
+### 2. 下載依賴套件。
+2-1. 創建一個虛擬環境。
+``` bash
+python -m venv .venv
+```
+2-2. 啟動虛擬環境。
+``` bash
+source .venv/bin/activate
+# Windows 執行 .venv/Scripts/activate
+```
+2-3. 安裝依賴套件。
+``` bash
+pip install -r requirements.txt
+```
+### 3. 執行程式。
 ``` bash
 python test.py
 ```
