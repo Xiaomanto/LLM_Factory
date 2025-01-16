@@ -1,9 +1,15 @@
-# 語言模型大工廠 初版 V1.0.0
+# 語言模型大工廠 初版 V2.0.0
 這是一個使用 Python 3.10.6 開發的語言模型大工廠，可以使用各種語言模型。<br>
 目前支援 : <img src="./icons/openai.png" alt="OpenAI" width="20" style="border-radius: 10px;"> ```OpenAI```
 / <img src="./icons/ollama.png" alt="OpenAI" width="20" style="border-radius: 10px;"> ```Ollama``` 可自行擴展。
 
-## 使用方式
+## 更新日誌
+<ul>
+    <li>2025 - 01 - 15 : 初版發放 V1.0.0</li>
+    <li>2025 - 01 - 16 : 變更檔案結構 V2.0.0</li>
+</ul>
+
+## 部署方式
 ### 1. 下載程式碼並解壓縮。
 ``` bash
 git clone https://github.com/Xiaomanto/LLM_Factory.git
@@ -27,4 +33,4 @@ pip install -r requirements.txt
 ``` bash
 python test.py
 ```
-程式碼可自行引用調整。
+## 程式碼可自行引用調整，使用方法請參照 test.py。

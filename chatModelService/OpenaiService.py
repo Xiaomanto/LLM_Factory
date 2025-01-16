@@ -2,49 +2,40 @@ from typing import Literal
 from langchain.schema.document import Document
 from langchain.schema.vectorstore import VectorStoreRetriever
 from langchain_community.document_loaders import PyPDFLoader,CSVLoader,TextLoader,Docx2txtLoader,UnstructuredExcelLoader
-from langchain_ollama import OllamaLLM
 from langchain.text_splitter import TokenTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
-from langchain_core.prompts import ChatPromptTemplate
 from openai import OpenAI
+from chatModelService.BaseService import BaseService
 import os
 
-class BaseService():
-    def __init__(self, model:str, api_key:str, types:Literal['ollama','openai']='ollama', embedding_model:str|None=None,**kwargs):
+class OpenaiService(BaseService):
+    def __init__(self, model:str, api_key:str, embedding_model:str|None=None,**kwargs):
         """
             ## 其他參數：
              - base_url: str
         """
-        if "ollama" in types:
-            self.llm = OllamaLLM(model=model, **kwargs)
-        else:
-            self.llm = OpenAI(api_key=api_key, **kwargs)
-        self.types = types
+        self.llm = OpenAI(api_key=api_key, **kwargs)
         self.model = model
         if embedding_model:
             self.embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
 
     def Chat(self, prompt: str,**kwargs) -> str:
-        template = """
-            Question: {question}
+        context = kwargs.get("context","No context")
+        return self.llm.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system","content":"請根據提問的語言來回應問題。若沒有context，你可以用你既有的資料來回應問題。"},
+                {"role": "user", "content": "question : "+prompt},
+                {"role": "user", "content": "context : "+context}
+            ],
+        ).choices[0].message.content
 
-            context: {context}
-        """
-        context = kwargs.get("context")
-        if self.types == "ollama":
-            query = ChatPromptTemplate.from_template(template)
-            llm = query | self.llm
-            return llm.invoke({'question': prompt,"context":context})
-        if self.types == "openai":
-            return self.llm.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-            ).choices[0].message.content
-
+    
     def RAG(self, query: str, context:str)-> str:
         return self.Chat(query, context)
 
+    
     def Summarize_text(self, text:str, **kwargs)-> VectorStoreRetriever:
         """
         ### 可用參數
@@ -63,6 +54,7 @@ class BaseService():
         vecstore = FAISS.from_texts(texts=doc,embedding=self.embeddings)
         return vecstore.as_retriever(kwargs)
 
+    
     def Summarize_document(self, document: list[Document], **kwargs) -> VectorStoreRetriever:
         """
         ### 可用參數
@@ -81,6 +73,7 @@ class BaseService():
         vecstore = FAISS.from_documents(doc, self.embeddings)
         return vecstore.as_retriever(**kwargs)
 
+    
     def FileLoader(self, fileOrDirName:str, mode:Literal['Dir','file']='file',**kwargs) -> dict[str,list[Document]]:
         """
             用於讀取[pdf,docx,txt,csv,excel]類型的文件，並回傳一個字典，key預設為文件名稱
