@@ -1,4 +1,4 @@
-# 語言模型大工廠 初版 V2.0.0
+# 語言模型大工廠 V2.0.0
 這是一個使用 Python 3.10.6 開發的語言模型大工廠，可以使用各種語言模型。<br>
 目前支援 : <img src="./icons/openai.png" alt="OpenAI" width="20" style="border-radius: 10px;"> ```OpenAI```
 / <img src="./icons/ollama.png" alt="OpenAI" width="20" style="border-radius: 10px;"> ```Ollama``` 可自行擴展。
